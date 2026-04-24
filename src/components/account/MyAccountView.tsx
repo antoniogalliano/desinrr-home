@@ -1578,13 +1578,12 @@ const CREDIT_PACKAGES: Record<string, { rate: number; unit: string }> = {
   'Transcription minutes':  { rate: 60,    unit: 'minutes' },
 };
 
-const AMOUNT_OPTIONS = [5, 10, 25, 50, 100];
+const AMOUNT_OPTIONS = [5, 25, 50];
 
 function BuyCreditsModal({ creditType, onClose }: { creditType: string; onClose: () => void }) {
   const ns = { fontFamily: "'Nunito Sans', sans-serif" } as const;
   const [selected, setSelected] = useState(25);
-  const [custom, setCustom] = useState('');
-  const amount = custom ? parseFloat(custom) || 0 : selected;
+  const amount = selected;
   const pkg = CREDIT_PACKAGES[creditType] ?? { rate: 1000, unit: 'credits' };
   const quantity = Math.floor(amount * pkg.rate);
 
@@ -1629,40 +1628,19 @@ function BuyCreditsModal({ creditType, onClose }: { creditType: string; onClose:
             {AMOUNT_OPTIONS.map((opt) => (
               <button
                 key={opt}
-                onClick={() => { setSelected(opt); setCustom(''); }}
+                onClick={() => setSelected(opt)}
                 style={{
                   flex: 1, height: 44, borderRadius: 8,
-                  border: `1.5px solid ${!custom && selected === opt ? '#006EFE' : '#E0E5EB'}`,
-                  background: !custom && selected === opt ? '#EEF5FF' : '#fff',
+                  border: `1.5px solid ${selected === opt ? '#006EFE' : '#E0E5EB'}`,
+                  background: selected === opt ? '#EEF5FF' : '#fff',
                   cursor: 'pointer',
                   ...ns, fontSize: 15, fontWeight: 600,
-                  color: !custom && selected === opt ? '#006EFE' : '#15191F',
+                  color: selected === opt ? '#006EFE' : '#15191F',
                 }}
               >
                 ${opt}
               </button>
             ))}
-          </div>
-
-          {/* Custom input */}
-          <div className="relative">
-            <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', ...ns, fontSize: 15, color: '#8596AD' }}>$</span>
-            <input
-              type="number"
-              min="1"
-              placeholder="Custom amount"
-              value={custom}
-              onChange={(e) => { setCustom(e.target.value); }}
-              onFocus={() => setSelected(0)}
-              className="outline-none w-full"
-              style={{
-                height: 44, borderRadius: 8,
-                border: `1.5px solid ${custom ? '#006EFE' : '#E0E5EB'}`,
-                padding: '0 12px 0 28px',
-                ...ns, fontSize: 15, color: '#15191F',
-                background: custom ? '#EEF5FF' : '#fff',
-              }}
-            />
           </div>
         </div>
 
